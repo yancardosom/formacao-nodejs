@@ -1,0 +1,41 @@
+// index.js const iniciarCorrida = require('./game'); const readline = require('readline');
+
+const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+
+rl.question('Qual o nome do seu personagem? ', (nome) => { iniciarCorrida(nome); rl.close(); });
+
+// game.js const Racer = require('./racer'); const items = require('./items');
+
+function iniciarCorrida(jogadorNome) { const jogador = new Racer(jogadorNome); const adversario = new Racer("Bowser");
+
+while (jogador.posicao < 30 && adversario.posicao < 30) { jogador.mover(); adversario.mover();
+
+if (Math.random() < 0.3) {
+  const item = items[Math.floor(Math.random() * items.length)];
+  jogador.itens.push(item);
+  console.log(`${jogador.nome} pegou um ${item.nome}!`);
+}
+
+jogador.usarItem();
+
+console.log(`Posição: ${jogador.nome}: ${jogador.posicao}, ${adversario.nome}: ${adversario.posicao}`);
+console.log('---');
+
+}
+
+const vencedor = jogador.posicao >= 30 ? jogador.nome : adversario.nome; console.log(🏁 ${vencedor} venceu a corrida!); }
+
+module.exports = iniciarCorrida;
+
+// racer.js class Racer { constructor(nome) { this.nome = nome; this.posicao = 0; this.itens = []; }
+
+mover() { const avancar = Math.floor(Math.random() * 6) + 1; this.posicao += avancar; console.log(${this.nome} andou ${avancar} casas!); }
+
+usarItem() { if (this.itens.length > 0) { const item = this.itens.shift(); console.log(${this.nome} usou ${item.nome}); item.efeito(this); } } }
+
+module.exports = Racer;
+
+// items.js const items = [ { nome: 'Casco Verde', efeito: (alvo) => { alvo.posicao -= 2; console.log(${alvo.nome} foi atingido e voltou 2 casas!); } }, { nome: 'Cogumelo', efeito: (racer) => { racer.posicao += 3; console.log(${racer.nome} acelerou com o Cogumelo!); } } ];
+
+module.exports = items;
+
